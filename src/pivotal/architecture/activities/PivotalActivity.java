@@ -1,8 +1,8 @@
 package pivotal.architecture.activities;
 
+import pivotal.architecture.R;
 import pivotal.architecture.callbacks.PivotalLoaderCallbacksListener;
 import pivotal.architecture.loaders.PivotalPeopleViewLoaderCallbacks;
-import android.R;
 import android.app.Activity;
 import android.content.Loader;
 import android.database.Cursor;
