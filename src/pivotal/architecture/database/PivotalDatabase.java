@@ -1,10 +1,8 @@
 package pivotal.architecture.database;
 
-import pivotal.architecture.PivotalApplication;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class PivotalDatabase extends SQLiteOpenHelper {
 
@@ -16,7 +14,6 @@ public class PivotalDatabase extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		Log.d(PivotalApplication.DEBUG_TAG, "onCreate PivotalDatabase");
 		db.execSQL(PivotalPeopleTable.DROP);
 		db.execSQL(PivotalPeopleTable.CREATE);
 		db.execSQL(PivotalPeopleTable.DATA_CREATE);
