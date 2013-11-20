@@ -30,6 +30,11 @@
             android:name="pivotal.architecture.providers.PivotalContentProvider"
             android:authorities="pivotal.authority"
             android:exported="false" />
+
+        <service
+            android:name="pivotal.architecture.services.PivotalService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
