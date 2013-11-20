@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <dimen name="list_item_activity_pivotal_text_view_padding">30dp</dimen>
+    <dimen name="list_item_activity_pivotal_text_view_text_size">15sp</dimen>
+
+    <style name="list_item_activity_pivotal_text_view">
+        <item name="android:padding">@dimen/list_item_activity_pivotal_text_view_padding</item>
+        <item name="android:textSize">@dimen/list_item_activity_pivotal_text_view_text_size</item>
+    </style>
+    
+</resources>
