@@ -4,6 +4,9 @@ import java.util.Locale;
 
 import pivotal.architecture.database.PivotalDatabase;
 import pivotal.architecture.database.PivotalPeopleTable;
+import pivotal.architecture.database.PivotalPeopleView;
+import pivotal.architecture.database.PivotalTasksTable;
+import pivotal.architecture.services.PivotalService;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -43,6 +46,10 @@ public class PivotalContentProvider extends ContentProvider {
 		switch (match) {
 		case PivotalPeopleTable.CODE:
 			return PivotalPeopleTable.TABLE_NAME;
+		case PivotalPeopleView.CODE:
+			return PivotalPeopleView.VIEW_NAME;
+		case PivotalTasksTable.CODE:
+			return PivotalTasksTable.TABLE_NAME;
 		}
 		return null;
 	}
@@ -69,7 +76,30 @@ public class PivotalContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		final Cursor cursor = getDatabase().query(getTableName(uri), projection, selection, selectionArgs, sortOrder, null, null);
+
+		launchTask(uri, cursor);
+
 		return cursor;
+	}
+
+	private void launchTask(final Uri uri, final Cursor cursor) {
+		final int match = mURIMatcher.match(uri);
+		switch (match) {
+		case PivotalTasksTable.CODE:
+			boolean launchNetworkRequest = true;
+			if (cursor.moveToFirst()) {
+				final int timeColumnIndex = cursor.getColumnIndex(PivotalTasksTable.Columns.TIME);
+				final long time = cursor.getLong(timeColumnIndex);
+				final long duration = Math.abs(System.currentTimeMillis() - time);
+				launchNetworkRequest = duration > STALE_DATA_THRESHOLD;
+			}
+			final String uriString = uri.getQueryParameter(TASK_URI);
+			launchNetworkRequest = launchNetworkRequest && uriString != null;
+			if (launchNetworkRequest) {
+				final Uri taskUri = Uri.parse(uriString);
+				PivotalService.startTask(getContext(), taskUri);
+			}
+		}
 	}
 
 	@Override
@@ -81,6 +111,8 @@ public class PivotalContentProvider extends ContentProvider {
 	@Override
 	public boolean onCreate() {
 		mURIMatcher.addURI(AUTHORITY, PivotalPeopleTable.URI_PATH, PivotalPeopleTable.CODE);
+		mURIMatcher.addURI(AUTHORITY, PivotalPeopleView.URI_PATH, PivotalPeopleView.CODE);
+		mURIMatcher.addURI(AUTHORITY, PivotalTasksTable.URI_PATH, PivotalTasksTable.CODE);
 		return true;
 	}
 
